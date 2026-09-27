@@ -1,0 +1,273 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-display: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif,
+    system-ui, sans-serif;
+
+  /* --- Palette : ciel de nuit bleu + cartes blanches --- */
+  --color-night: #070d22;
+  --color-night-2: #0d1a40;
+  --color-cream: #eef3ff;
+  --color-cream-2: #e2eaff;
+  --color-ink: #0e1c3f;
+  --color-ink-soft: #16305f;
+  --color-ink-deep: #08122b;
+  --color-muted: #4d5f85;
+
+  /* Sûreté : les anciennes classes "ink-*" restent lisibles en thème clair */
+  --color-ink-950: #eef3ff;
+  --color-ink-900: #ffffff;
+  --color-ink-850: #ffffff;
+  --color-ink-800: #e2eaff;
+  --color-ink-700: rgba(14, 28, 63, 0.13);
+  --color-ink-600: rgba(14, 28, 63, 0.22);
+  --color-ink-50: #0e1c3f;
+  --color-ink-400: #4d5f85;
+  --color-ink-300: #4d5f85;
+  --color-ink-200: #0e1c3f;
+
+  /* --- Accent : BLEU (couleur principale d'Axel bot's) --- */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #60a5fa;
+  --color-brand-400: #3b82f6;
+  --color-brand-500: #2563eb;
+  --color-brand-600: #1d4ed8;
+  --color-brand-700: #1e40af;
+  --color-brand-800: #1e3a8a;
+  --color-brand-900: #172554;
+
+  --shadow-card: 0 18px 52px rgba(0, 0, 0, 0.45);
+  --shadow-card-hover: 0 20px 46px rgba(0, 0, 0, 0.55);
+  --shadow-pill: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-panel: 0 26px 80px rgba(0, 0, 0, 0.55);
+
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-scale-in: scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3.5s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.2s linear infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-16px);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: rgba(14, 28, 63, 0.13);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-night);
+  background-image: radial-gradient(
+      ellipse 95% 55% at 50% -12%,
+      rgba(37, 99, 235, 0.38),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 88% 18%,
+      rgba(96, 165, 250, 0.16),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 60% 55% at 8% 88%,
+      rgba(30, 58, 138, 0.4),
+      transparent 65%
+    );
+  background-attachment: fixed;
+  color: #e8eeff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.75);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+.shooting-star {
+  position: absolute;
+  left: -160px;
+  width: 130px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(191, 219, 254, 0.95)
+  );
+  filter: drop-shadow(0 0 6px rgba(147, 197, 253, 0.8));
+  opacity: 0;
+  animation: shoot 7s linear infinite;
+}
+
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: translateX(0) rotate(14deg);
+  }
+  2% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0;
+    transform: translateX(130vw) rotate(14deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(130vw) rotate(14deg);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-brand-400) 30%, transparent);
+  color: var(--color-ink);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-night);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(238, 243, 255, 0.22);
+  border-radius: 999px;
+  border: 2px solid var(--color-night);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(238, 243, 255, 0.4);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+/* Carte claire façon Looters */
+@utility surface {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(14, 28, 63, 0.1);
+  box-shadow: var(--shadow-card);
+}
+
+/* Panneau sombre façon Looters (blocs forts, sidebar, footer) */
+@utility panel-dark {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  border: 1px solid rgba(247, 246, 242, 0.08);
+  box-shadow: var(--shadow-panel);
+}
+
+@utility text-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--color-ink) 8%,
+    var(--color-brand-500) 55%,
+    var(--color-brand-300)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility grid-bg {
+  background-image: linear-gradient(
+      to right,
+      rgba(147, 197, 253, 0.10) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(147, 197, 253, 0.10) 1px,
+      transparent 1px
+    );
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
