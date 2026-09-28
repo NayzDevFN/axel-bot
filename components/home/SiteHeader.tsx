@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Layout";
+import { HeaderLoginButton } from "@/components/auth/HeaderLoginButton";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -35,6 +36,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+          <HeaderLoginButton />
           <Link
             href="/dashboard"
             className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-brand-500 px-4 font-display text-[13px] font-black text-white shadow-[0_8px_24px_rgba(37,99,235,0.45)] transition hover:-translate-y-0.5 hover:bg-brand-400 xl:px-5 xl:text-sm"
