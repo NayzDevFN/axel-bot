@@ -255,7 +255,7 @@ function Sparkle({ className = "" }: { className?: string }) {
   );
 }
 
-export function DiscordIcon() {
+function DiscordIcon() {
   return (
     <svg
       viewBox="0 0 24 24"

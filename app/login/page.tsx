@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Layout";
-import { LoginButton } from "@/components/auth/LoginButton";
-import { DiscordIcon } from "@/app/page";
+import { CodeLoginForm } from "@/components/auth/CodeLoginForm";
 
 const benefits = [
   { icon: "🛡️", text: "Accès complet à la configuration d’Axel Bot" },
   { icon: "🏠", text: "Gestion de tes serveurs Discord où tu es Staff" },
-  { icon: "🔒", text: "Aucune donnée stockée sans ta permission" },
-  { icon: "⚡", text: "Connexion rapide via Discord OAuth2" },
+  { icon: "🔑", text: "Connexion réservée aux codes d’accès pré-enregistrés" },
+  { icon: "🔒", text: "Aucun compte à créer, aucune donnée stockée" },
 ];
 
 export const metadata = {
-  title: "Connexion Discord",
-  description: "Connecte-toi avec Discord pour accéder au dashboard Axel Bot.",
+  title: "Connexion",
+  description:
+    "Connecte-toi avec ton code d’accès pour accéder au dashboard Axel Bot.",
 };
 
 export default function LoginPage() {
@@ -40,41 +40,24 @@ export default function LoginPage() {
             </span>
 
             <h1 className="mt-5 font-display text-2xl font-bold tracking-[-0.02em] text-ink sm:text-3xl">
-              Se connecter avec Discord
+              Se connecter avec un code
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Utilise ton compte Discord pour accéder au dashboard d’
-              <strong className="font-bold text-ink"> Axel Bot</strong>.
+              Entre ton code d’accès pour accéder au dashboard d’
+              <strong className="font-bold text-ink"> Axel Bot</strong>. Seuls
+              les codes pré-enregistrés sont acceptés.
             </p>
 
-            <LoginButton />
+            <CodeLoginForm />
 
-            <div className="my-6 flex items-center gap-4">
-              <span className="h-px flex-1 bg-[#0e1c3f]/10" />
-              <span className="text-xs font-bold uppercase tracking-wider text-muted">
-                ou
-              </span>
-              <span className="h-px flex-1 bg-[#0e1c3f]/10" />
-            </div>
-
-            <div className="rounded-[1.35rem] border border-amber-200 bg-amber-50 p-4">
-              <p className="text-xs font-black text-amber-700">
-                ⚠️ OAuth2 non configuré
+            <div className="mt-7 rounded-[1.35rem] border border-brand-200 bg-brand-50 p-4">
+              <p className="text-xs font-black text-brand-700">
+                🔑 Connexion par code uniquement
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                L’interface est prête. Renseigne{" "}
-                <code className="rounded bg-white px-1.5 py-0.5 font-mono text-ink">
-                  DISCORD_CLIENT_ID
-                </code>{" "}
-                et{" "}
-                <code className="rounded bg-white px-1.5 py-0.5 font-mono text-ink">
-                  DISCORD_CLIENT_SECRET
-                </code>{" "}
-                dans{" "}
-                <code className="rounded bg-white px-1.5 py-0.5 font-mono text-ink">
-                  .env.local
-                </code>{" "}
-                puis branche la route OAuth2 (voir README).
+                Les comptes sont créés à l’avance par l’administrateur du site.
+                Sans code valide, l’accès au dashboard est bloqué. Un code
+                expiré ou inconnu renvoie directement vers cette page.
               </p>
             </div>
 
@@ -111,8 +94,8 @@ export default function LoginPage() {
               </ul>
 
               <div className="mt-8 flex items-center gap-2 text-xs text-cream/55">
-                <DiscordIcon />
-                Discord OAuth2 · prêt à connecter
+                <span aria-hidden="true">🔑</span>
+                Accès par code · réservé au staff
               </div>
             </div>
           </div>

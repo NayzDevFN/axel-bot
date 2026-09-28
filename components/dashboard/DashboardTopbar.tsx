@@ -1,8 +1,19 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/Layout";
-import { currentUser } from "@/lib/servers";
+import { clearSession, getSession } from "@/lib/auth";
 
 export function DashboardTopbar() {
+  const router = useRouter();
+  const session = getSession();
+
+  const logout = () => {
+    clearSession();
+    router.replace("/login");
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-ink shadow-[0_10px_30px_-18px_rgba(0,0,0,0.9)]">
       <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-4 px-4 sm:px-6">
@@ -30,18 +41,22 @@ export function DashboardTopbar() {
 
           <div className="flex items-center gap-2.5 rounded-full border border-white/15 bg-white/10 py-1 pl-1 pr-3">
             <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-500 text-[11px] font-black text-white">
-              {currentUser.avatar}
+              {session?.avatar ?? "?"}
             </span>
-            <span className="text-xs font-bold text-cream">
-              {currentUser.displayName}
+            <span className="hidden text-xs font-bold text-cream sm:inline">
+              {session?.displayName ?? "—"}
             </span>
-            <Link
-              href="/login"
+            <span className="hidden rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-cream/70 sm:inline">
+              {session?.role ?? ""}
+            </span>
+            <button
+              type="button"
+              onClick={logout}
               title="Se déconnecter"
               className="text-cream/60 transition hover:text-red-400"
             >
               ⎋
-            </Link>
+            </button>
           </div>
         </div>
       </div>
