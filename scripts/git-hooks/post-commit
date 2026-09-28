@@ -1,0 +1,17 @@
+#!/bin/sh
+# Push automatique vers GitHub apres chaque commit.
+# Active via : git config core.hooksPath scripts/git-hooks
+
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+[ -z "$branch" ] && exit 0
+[ "$branch" = "HEAD" ] && exit 0
+
+remote=$(git remote 2>/dev/null | head -n 1)
+[ -z "$remote" ] && remote="origin"
+
+if ! git push "$remote" "$branch" >/dev/null 2>&1; then
+  git pull --rebase --autostash "$remote" "$branch" >/dev/null 2>&1
+  git push "$remote" "$branch" >/dev/null 2>&1 || true
+fi
+
+exit 0
