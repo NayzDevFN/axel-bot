@@ -35,6 +35,13 @@ export const accounts: Account[] = [
     role: "Admin",
   },
   {
+    code: "BOT-4J12IJ3K45F21",
+    username: "bot.axel",
+    displayName: "Bot",
+    avatar: "Bt",
+    role: "Admin",
+  },
+  {
     code: "GUEST-DEMO-1234",
     username: "guest.demo",
     displayName: "Invité",
