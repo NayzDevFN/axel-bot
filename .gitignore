@@ -11,3 +11,6 @@ next-env.d.ts
 
 # Export statique (GitHub Pages)
 /out
+
+# Journal de synchronisation git
+scripts/sync.log
