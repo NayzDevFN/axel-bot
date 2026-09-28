@@ -1,7 +1,7 @@
 import { saveSession, type Session } from "./auth";
 
 export const DISCORD_CLIENT_ID =
-  process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID ?? "";
+  process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || "1554188804309655562";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const STORAGE_KEY = "axelbot.discord.oauth";
