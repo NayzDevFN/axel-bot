@@ -57,8 +57,17 @@ export function HeaderLoginButton() {
         className="flex items-center gap-2 transition hover:opacity-85"
         title={`Connecté en tant que ${session.displayName}`}
       >
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-brand-500 text-[11px] font-black text-white">
-          {session.avatar}
+        <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-brand-500 text-[11px] font-black text-white">
+          {session.avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={session.avatarUrl}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            session.avatar
+          )}
         </span>
         <span className="hidden text-xs font-bold text-cream sm:inline">
           {session.displayName}

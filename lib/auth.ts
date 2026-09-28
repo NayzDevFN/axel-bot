@@ -10,6 +10,7 @@ export type Session = {
   username: string;
   displayName: string;
   avatar: string;
+  avatarUrl?: string;
   role: Account["role"];
   expiresAt: number;
 };
@@ -50,24 +51,29 @@ export const accounts: Account[] = [
   },
 ];
 
-export function loginWithCode(input: string): Account | null {
-  const value = input.trim().toUpperCase();
-  const account = accounts.find((a) => a.code.toUpperCase() === value);
-  if (!account) return null;
-
-  const session: Session = {
-    username: account.username,
-    displayName: account.displayName,
-    avatar: account.avatar,
-    role: account.role,
-    expiresAt: Date.now() + SESSION_DURATION,
-  };
+export function saveSession(data: Omit<Session, "expiresAt">): Session {
+  const session: Session = { ...data, expiresAt: Date.now() + SESSION_DURATION };
 
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
   } catch {
     memorySession = session;
   }
+
+  return session;
+}
+
+export function loginWithCode(input: string): Account | null {
+  const value = input.trim().toUpperCase();
+  const account = accounts.find((a) => a.code.toUpperCase() === value);
+  if (!account) return null;
+
+  saveSession({
+    username: account.username,
+    displayName: account.displayName,
+    avatar: account.avatar,
+    role: account.role,
+  });
 
   return account;
 }

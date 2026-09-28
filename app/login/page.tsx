@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Layout";
-import { CodeLoginForm } from "@/components/auth/CodeLoginForm";
+import { DiscordLoginButton } from "@/components/auth/DiscordLoginButton";
 
 const benefits = [
   { icon: "🛡️", text: "Accès complet à la configuration d’Axel Bot" },
   { icon: "🏠", text: "Gestion de tes serveurs Discord où tu es Staff" },
-  { icon: "🔑", text: "Connexion réservée aux codes d’accès pré-enregistrés" },
-  { icon: "🔒", text: "Aucun compte à créer, aucune donnée stockée" },
+  { icon: "🔑", text: "Connexion via ton compte Discord autorisé" },
+  { icon: "🔒", text: "Aucun autre compte ne peut accéder au dashboard" },
 ];
 
 export const metadata = {
   title: "Connexion",
   description:
-    "Connecte-toi avec ton code d’accès pour accéder au dashboard Axel Bot.",
+    "Connecte-toi avec ton compte Discord pour accéder au dashboard Axel Bot.",
 };
 
 export default function LoginPage() {
@@ -40,24 +40,25 @@ export default function LoginPage() {
             </span>
 
             <h1 className="mt-5 font-display text-2xl font-bold tracking-[-0.02em] text-ink sm:text-3xl">
-              Se connecter avec un code
+              Se connecter
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Entre ton code d’accès pour accéder au dashboard d’
+              Connecte-toi avec ton compte Discord pour accéder au dashboard d’
               <strong className="font-bold text-ink"> Axel Bot</strong>. Seuls
-              les codes pré-enregistrés sont acceptés.
+              les comptes Discord autorisés sont acceptés.
             </p>
 
-            <CodeLoginForm />
+            <div className="mt-7">
+              <DiscordLoginButton />
+            </div>
 
             <div className="mt-7 rounded-[1.35rem] border border-brand-200 bg-brand-50 p-4">
               <p className="text-xs font-black text-brand-700">
-                🔑 Connexion par code uniquement
+                🔑 Accès réservé
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                Les comptes sont créés à l’avance par l’administrateur du site.
-                Sans code valide, l’accès au dashboard est bloqué. Un code
-                expiré ou inconnu renvoie directement vers cette page.
+                Seuls 2 comptes Discord sont acceptés. Tout autre compte est
+                refusé et renvoie directement vers cette page.
               </p>
             </div>
 
@@ -95,7 +96,7 @@ export default function LoginPage() {
 
               <div className="mt-8 flex items-center gap-2 text-xs text-cream/55">
                 <span aria-hidden="true">🔑</span>
-                Accès par code · réservé au staff
+                Connexion Discord · 2 comptes autorisés
               </div>
             </div>
           </div>

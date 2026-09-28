@@ -40,8 +40,17 @@ export function DashboardTopbar() {
           </span>
 
           <div className="flex items-center gap-2.5 rounded-full border border-white/15 bg-white/10 py-1 pl-1 pr-3">
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-500 text-[11px] font-black text-white">
-              {session?.avatar ?? "?"}
+            <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-brand-500 text-[11px] font-black text-white">
+              {session?.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={session.avatarUrl}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                session?.avatar ?? "?"
+              )}
             </span>
             <span className="hidden text-xs font-bold text-cream sm:inline">
               {session?.displayName ?? "—"}
