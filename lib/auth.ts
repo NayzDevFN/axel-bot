@@ -1,17 +1,14 @@
-export type Account = {
-  code: string;
-  username: string;
-  displayName: string;
-  avatar: string;
-  role: "Owner" | "Admin" | "Staff";
-};
+import { verifyAccessCode, type AccessCode, type Role } from "./database";
+
+export type Account = AccessCode;
+export type { Role };
 
 export type Session = {
   username: string;
   displayName: string;
   avatar: string;
   avatarUrl?: string;
-  role: Account["role"];
+  role: Role;
   expiresAt: number;
 };
 
@@ -19,37 +16,6 @@ const STORAGE_KEY = "axelbot.session";
 const SESSION_DURATION = 1000 * 60 * 60 * 24 * 7;
 
 let memorySession: Session | null = null;
-
-export const accounts: Account[] = [
-  {
-    code: "AXEL-ROOT-0001",
-    username: "axel.dev",
-    displayName: "Axel",
-    avatar: "Ax",
-    role: "Owner",
-  },
-  {
-    code: "KYCKS-STAFF-0427",
-    username: "kycks",
-    displayName: "Kycks",
-    avatar: "Ky",
-    role: "Admin",
-  },
-  {
-    code: "BOT-4J12IJ3K45F21",
-    username: "bot.axel",
-    displayName: "Bot",
-    avatar: "Bt",
-    role: "Admin",
-  },
-  {
-    code: "GUEST-DEMO-1234",
-    username: "guest.demo",
-    displayName: "Invité",
-    avatar: "Gv",
-    role: "Staff",
-  },
-];
 
 export function saveSession(data: Omit<Session, "expiresAt">): Session {
   const session: Session = { ...data, expiresAt: Date.now() + SESSION_DURATION };
@@ -63,19 +29,16 @@ export function saveSession(data: Omit<Session, "expiresAt">): Session {
   return session;
 }
 
-export function loginWithCode(input: string): Account | null {
-  const value = input.trim().toUpperCase();
-  const account = accounts.find((a) => a.code.toUpperCase() === value);
+export function loginWithCode(input: string): Session | null {
+  const account = verifyAccessCode(input);
   if (!account) return null;
 
-  saveSession({
+  return saveSession({
     username: account.username,
     displayName: account.displayName,
     avatar: account.avatar,
     role: account.role,
   });
-
-  return account;
 }
 
 export function getSession(): Session | null {

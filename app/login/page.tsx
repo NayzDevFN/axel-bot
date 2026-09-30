@@ -1,19 +1,19 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Layout";
-import { DiscordLoginButton } from "@/components/auth/DiscordLoginButton";
+import { CodeLoginForm } from "@/components/auth/CodeLoginForm";
 import { InviteBotButton } from "@/components/bot/InviteBotButton";
 
 const benefits = [
   { icon: "🛡️", text: "Accès complet à la configuration d’Axel Bot" },
   { icon: "🏠", text: "Gestion de tes serveurs Discord où tu es Staff" },
-  { icon: "🔑", text: "Connexion via ton compte Discord autorisé" },
-  { icon: "🔒", text: "Aucun autre compte ne peut accéder au dashboard" },
+  { icon: "🔑", text: "Connexion via ton code d’accès personnel" },
+  { icon: "🔒", text: "Aucun autre code ne peut accéder au dashboard" },
 ];
 
 export const metadata = {
   title: "Connexion",
   description:
-    "Connecte-toi avec ton compte Discord pour accéder au dashboard Axel Bot.",
+    "Connecte-toi avec ton code d’accès pour accéder au dashboard Axel Bot.",
 };
 
 export default function LoginPage() {
@@ -44,13 +44,13 @@ export default function LoginPage() {
               Se connecter
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              Connecte-toi avec ton compte Discord pour accéder au dashboard d’
+              Connecte-toi avec ton code d’accès pour accéder au dashboard d’
               <strong className="font-bold text-ink"> Axel Bot</strong>. Seuls
-              les comptes Discord autorisés sont acceptés.
+              les codes d’accès autorisés sont acceptés.
             </p>
 
             <div className="mt-7">
-              <DiscordLoginButton />
+              <CodeLoginForm />
             </div>
 
             <div className="mt-4 flex items-center gap-3">
@@ -74,8 +74,8 @@ export default function LoginPage() {
                 🔑 Accès réservé
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                Seuls 2 comptes Discord sont acceptés. Tout autre compte est
-                refusé et renvoie directement vers cette page.
+                Seul un code d’accès est accepté. Chaque tentative de connexion
+                est enregistrée dans la base de données du dashboard.
               </p>
             </div>
 
@@ -113,7 +113,7 @@ export default function LoginPage() {
 
               <div className="mt-8 flex items-center gap-2 text-xs text-cream/55">
                 <span aria-hidden="true">🔑</span>
-                Connexion Discord · 2 comptes autorisés
+                Connexion par code d’accès · connexions enregistrées
               </div>
             </div>
           </div>

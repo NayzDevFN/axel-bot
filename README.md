@@ -71,7 +71,7 @@ npm run lint        # ESLint
 │   ├── page.tsx                  # 🏠 Accueil
 │   ├── not-found.tsx             # Page 404
 │   ├── login/
-│   │   └── page.tsx              # 🔐 Connexion Discord (OAuth2 PKCE)
+│   │   └── page.tsx              # 🔐 Connexion par code d’accès
 │   └── dashboard/
 │       ├── layout.tsx            # Topbar du dashboard
 │       ├── page.tsx              # 📊 Sélection du serveur
@@ -97,10 +97,12 @@ npm run lint        # ESLint
 │   │   ├── SaveBar.tsx           # Barre d’enregistrement + DangerZone
 │   │   └── Layout.tsx            # Logo / PageHeading / EmptyState
 │   ├── home/                     # Header & footer du site vitrine
-│   ├── auth/DiscordLoginButton.tsx # Bouton « Se connecter avec Discord »
+│   ├── auth/                    # AuthGuard, formulaire de code, header
 │   ├── bot/                      # État du bot + bouton d’invitation
 │   └── dashboard/                # Topbar, sidebar serveur, giveaways
 ├── lib/
+│   ├── database.ts              # 🗄️ Base : codes d’accès + historique
+│   ├── auth.ts                  # 🔐 Session (localStorage, 7 jours)
 │   ├── servers.ts                # 📌 MOCK : serveurs, membres, giveaways…
 │   └── content.ts                # 📌 MOCK : features, nav, stats
 ├── public/                       # Assets statiques (logo, icônes)
@@ -111,38 +113,28 @@ npm run lint        # ESLint
 
 ---
 
-## 🔌 Connexion Discord OAuth2 (en place)
+## 🔐 Connexion par code d’accès
 
-Flux **OAuth2 PKCE** 100 % navigateur (aucun `client_secret`, compatible avec
-l'export statique GitHub Pages) :
+Plus aucune connexion Discord OAuth2 : l’accès au dashboard se fait avec un
+**code d’accès** unique, vérifié par la base de données du projet.
 
 | Élément | Fichier |
 |---|---|
-| Démarrage de la connexion | `lib/discordAuth.ts` → `startDiscordLogin()` |
-| Échange du `code` + appel `/users/@me` | `lib/discordAuth.ts` → `fetchDiscordUser()` |
-| Refus des comptes non autorisés | `lib/discordAuth.ts` → `loginWithDiscord()` |
-| Callback | `/login/callback/` → `components/auth/DiscordCallback.tsx` |
+| Base de données (codes + historique des connexions) | `lib/database.ts` |
+| Vérification du code | `lib/database.ts` → `verifyAccessCode()` |
 | Session (7 jours, localStorage) | `lib/auth.ts` |
+| Formulaire de connexion | `components/auth/CodeLoginForm.tsx` sur `/login` |
+| Protection du dashboard | `components/auth/AuthGuard.tsx` |
 
-**Accès réservé à 2 comptes Discord** (`ALLOWED_DISCORD_IDS` dans
-`lib/discordAuth.ts`) :
+**Code d’accès Owner** : défini dans `lib/database.ts` (table `accessCodes`),
+rôle `Owner`, seul code actif par défaut. Ajoute d’autres entrées dans cette
+table pour créer d’autres comptes (`role`, `active`).
 
-| ID Discord | Rôle |
-|---|---|
-| `1504642357423898754` | Owner |
-| `1327954422277603394` | Admin |
-
-Tout autre compte est refusé après l'authorisation Discord et renvoie vers
-`/login`. Le paramètre `state` est vérifié au callback (anti-CSRF).
-
-### ⚙️ À faire dans le Discord Developer Portal
-
-1. **OAuth2 → Redirects** : ajouter les URLs **exactes**, slash final compris :
-   - `http://localhost:3000/login/callback/`
-   - `https://<user>.github.io/<repo>/login/callback/`
-2. **OAuth2 → Public Client** : **activé** (indispensable pour échanger le code
-   sans `client_secret`).
-3. Scopes utilisés : `identify`.
+Le site est un export statique : la base est stockée dans le `localStorage`
+du navigateur sous la clé `axelbot.database`. Elle garde les codes valides et
+les **200 dernières tentatives de connexion** (horodatage, code saisi,
+succès/échec). Helpers disponibles : `getLoginHistory()`,
+`clearLoginHistory()`, `resetDatabase()`.
 
 ---
 
@@ -178,7 +170,7 @@ api/
 │   ├── config/GET.ts        # lire la config d’un serveur
 │   ├── config/PATCH.ts      # enregistrer une modification depuis le dashboard
 │   └── ...
-├── auth/…                   # OAuth2 (voir ci-dessus)
+├── auth/…                   # Code d’accès (voir ci-dessus)
 └── webhook/…                # événements Discord (optionnel)
 ```
 

@@ -9,8 +9,8 @@ export default function NotFound() {
         Page introuvable
       </h1>
       <p className="mt-2 max-w-md text-sm text-cream/70">
-        Cette page n’existe pas ou le serveur demandé n’est pas accessible avec
-        ton compte Discord.
+        Cette page n’existe pas ou le serveur demandé n’est pas accessible
+        avec ton niveau d’accès.
       </p>
       <div className="mt-7 flex gap-3">
         <Button href="/" variant="secondary">

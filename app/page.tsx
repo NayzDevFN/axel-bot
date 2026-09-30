@@ -8,7 +8,7 @@ const steps = [
   {
     n: "01",
     title: "Connecte-toi",
-    text: "Authentifie-toi avec Discord grâce à l’OAuth2 pour accéder à ton espace.",
+    text: "Entre ton code d’accès personnel pour accéder à ton espace.",
   },
   {
     n: "02",
@@ -213,8 +213,8 @@ export default function HomePage() {
               Prêt à donner vie à Axel community’s ?
             </h3>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-cream/70 sm:text-base">
-              Ouvre le dashboard, connecte-toi avec Discord et pilote chaque
-              module en quelques secondes.
+              Ouvre le dashboard, connecte-toi avec ton code d’accès et pilote
+              chaque module en quelques secondes.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button href="/login" size="lg">

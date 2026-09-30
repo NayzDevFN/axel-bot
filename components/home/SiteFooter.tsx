@@ -64,7 +64,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} Axel Bot — Tous droits réservés.
           </p>
           <p className="text-xs text-cream/55">
-            Discord OAuth2 : à connecter dans{" "}
+            Connexion par code d’accès ·{" "}
             <Link href="/login" className="text-brand-300 hover:underline">
               app/login
             </Link>
