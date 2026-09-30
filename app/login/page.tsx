@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Layout";
 import { DiscordLoginButton } from "@/components/auth/DiscordLoginButton";
+import { InviteBotButton } from "@/components/bot/InviteBotButton";
 
 const benefits = [
   { icon: "🛡️", text: "Accès complet à la configuration d’Axel Bot" },
@@ -50,6 +51,22 @@ export default function LoginPage() {
 
             <div className="mt-7">
               <DiscordLoginButton />
+            </div>
+
+            <div className="mt-4 flex items-center gap-3">
+              <span className="h-px flex-1 bg-[#0e1c3f]/10" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-muted">
+                ou
+              </span>
+              <span className="h-px flex-1 bg-[#0e1c3f]/10" />
+            </div>
+
+            <div className="mt-4">
+              <InviteBotButton variant="hero" />
+              <p className="mt-2.5 text-center text-[11px] leading-relaxed text-muted">
+                Ajoute Axel Bot sur ton serveur Discord (permissions
+                Administrateur).
+              </p>
             </div>
 
             <div className="mt-7 rounded-[1.35rem] border border-brand-200 bg-brand-50 p-4">

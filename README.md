@@ -36,6 +36,15 @@ npm run dev
 
 Ouvre [http://localhost:3000](http://localhost:3000).
 
+### Lancer l’API du bot (état en ligne)
+
+```bash
+npm run bot:api
+```
+
+Ouvre [http://localhost:8787/api/bot/status](http://localhost:8787/api/bot/status).
+Requiert `DISCORD_BOT_TOKEN` dans `.env.local` (cf. `.env.example`).
+
 ### Build de production
 
 ```bash
@@ -62,7 +71,7 @@ npm run lint        # ESLint
 │   ├── page.tsx                  # 🏠 Accueil
 │   ├── not-found.tsx             # Page 404
 │   ├── login/
-│   │   └── page.tsx              # 🔐 Connexion Discord (OAuth2 à venir)
+│   │   └── page.tsx              # 🔐 Connexion Discord (OAuth2 PKCE)
 │   └── dashboard/
 │       ├── layout.tsx            # Topbar du dashboard
 │       ├── page.tsx              # 📊 Sélection du serveur
@@ -88,7 +97,8 @@ npm run lint        # ESLint
 │   │   ├── SaveBar.tsx           # Barre d’enregistrement + DangerZone
 │   │   └── Layout.tsx            # Logo / PageHeading / EmptyState
 │   ├── home/                     # Header & footer du site vitrine
-│   ├── auth/LoginButton.tsx      # Bouton « Se connecter avec Discord »
+│   ├── auth/DiscordLoginButton.tsx # Bouton « Se connecter avec Discord »
+│   ├── bot/                      # État du bot + bouton d’invitation
 │   └── dashboard/                # Topbar, sidebar serveur, giveaways
 ├── lib/
 │   ├── servers.ts                # 📌 MOCK : serveurs, membres, giveaways…
@@ -101,44 +111,66 @@ npm run lint        # ESLint
 
 ---
 
-## 🔌 Où brancher la connexion Discord OAuth2
+## 🔌 Connexion Discord OAuth2 (en place)
 
-Le point d’entrée est déjà en place :
+Flux **OAuth2 PKCE** 100 % navigateur (aucun `client_secret`, compatible avec
+l'export statique GitHub Pages) :
 
-1. **Interface** : `app/login/page.tsx` (page de connexion) +
-   `components/auth/LoginButton.tsx`.
-2. **Dans `components/auth/LoginButton.tsx`**, la fonction `connect()` contient
-   ce TODO :
+| Élément | Fichier |
+|---|---|
+| Démarrage de la connexion | `lib/discordAuth.ts` → `startDiscordLogin()` |
+| Échange du `code` + appel `/users/@me` | `lib/discordAuth.ts` → `fetchDiscordUser()` |
+| Refus des comptes non autorisés | `lib/discordAuth.ts` → `loginWithDiscord()` |
+| Callback | `/login/callback/` → `components/auth/DiscordCallback.tsx` |
+| Session (7 jours, localStorage) | `lib/auth.ts` |
 
-   ```ts
-   // TODO OAuth2 : rediriger vers /api/auth/discord quand le client Discord sera configuré.
-   ```
+**Accès réservé à 2 comptes Discord** (`ALLOWED_DISCORD_IDS` dans
+`lib/discordAuth.ts`) :
 
-3. **À créer** :
-   - `app/api/auth/discord/route.ts` → redirection vers
-     `https://discord.com/oauth2/authorize?...` (scopes `identify guilds`).
-   - `app/api/auth/callback/route.ts` → échange du `code` contre un jeton, puis
-     création de la session.
-   - Stockage de session : cookies signés / `next-auth` / librairie équivalente.
+| ID Discord | Rôle |
+|---|---|
+| `1504642357423898754` | Owner |
+| `1327954422277603394` | Admin |
 
-4. **Variables d’environnement** à ajouter dans `.env.local` :
+Tout autre compte est refusé après l'authorisation Discord et renvoie vers
+`/login`. Le paramètre `state` est vérifié au callback (anti-CSRF).
 
-   ```bash
-   DISCORD_CLIENT_ID=
-   DISCORD_CLIENT_SECRET=
-   DISCORD_REDIRECT_URI=http://localhost:3000/api/auth/callback/discord
-   NEXT_PUBLIC_SITE_URL=http://localhost:3000
-   ```
+### ⚙️ À faire dans le Discord Developer Portal
 
-Une fois l’OAuth2 branchée, remplacer la liste de serveurs mockée par la
-réponse de `GET /users/@me/guilds` (filtrée sur les permissions *Administrateur*
-/ *Gérer le serveur*).
+1. **OAuth2 → Redirects** : ajouter les URLs **exactes**, slash final compris :
+   - `http://localhost:3000/login/callback/`
+   - `https://<user>.github.io/<repo>/login/callback/`
+2. **OAuth2 → Public Client** : **activé** (indispensable pour échanger le code
+   sans `client_secret`).
+3. Scopes utilisés : `identify`.
 
 ---
 
-## 🤖 Où ajouter l’API du bot
+## 🤖 API du bot (état en ligne + invitation)
 
-Le bot Discord n’est **pas encore développé**. Prévoir :
+Le site est statique : **le token du bot ne doit jamais entrer dans le bundle
+client**. Il est lu uniquement par `scripts/bot-api.mjs`, côté serveur.
+
+```bash
+npm run bot:api          # ou double-clic sur « Lancer l'API du bot.bat »
+```
+
+- Fichier secret : `.env.local` (ignoré par git, modèle dans `.env.example`)
+- `GET http://localhost:8787/api/bot/status` → `{ online, username, guildCount }`
+- `GET http://localhost:8787/api/bot/guilds` → serveurs où le bot est présent
+- Le site lit l'état via `NEXT_PUBLIC_BOT_API_URL` (`lib/bot.ts`), avec repli
+  « Bot non connecté » si l'API est éteinte.
+
+**Invitation du bot** : bouton « Inviter le bot » sur `/login` et dans la
+topbar du dashboard → `components/bot/InviteBotButton.tsx`
+(`https://discord.com/oauth2/authorize?client_id=1554188804309655562&permissions=8&integration_type=0&scope=bot`).
+
+> ⚠️ Un token Discord ne se partage **jamais** (chat, repo, image). S'il a été
+> affiché quelque part, régénère-le dans Developer Portal → Bot → Reset Token.
+
+### Pour aller plus loin (bot réellement connecté)
+
+Le bot lui-même n'est pas encore développé. Prévoir :
 
 ```
 api/
@@ -158,7 +190,6 @@ Points de branchement dans le dashboard (aujourd’hui 100 % mock) :
 | `dashboard/[serverId]/*/page.tsx` | valeurs `defaultValue` / `checked` des champs |
 | `components/dashboard/GiveawaysManager.tsx` | `giveaways` + création locale |
 | `components/ui/SaveBar.tsx` | `save()` → `PATCH /api/bot/config` |
-| `components/auth/LoginButton.tsx` | redirection OAuth2 |
 
 **Recommandation architecture** : le dashboard écrit dans une base de données
 (PostgreSQL/Prisma ou SQLite), le bot lit cette configuration au démarrage et

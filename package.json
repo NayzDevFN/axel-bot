@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "preview": "node scripts/serve-out.mjs",
+    "bot:api": "node scripts/bot-api.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

@@ -65,10 +65,14 @@ export async function startDiscordLogin(): Promise<void> {
   window.location.assign(`https://discord.com/oauth2/authorize?${params}`);
 }
 
-export function readPendingOAuth(): PendingOAuth | null {
+export function readPendingOAuth(state?: string): PendingOAuth | null {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as PendingOAuth) : null;
+    if (!raw) return null;
+
+    const pending = JSON.parse(raw) as PendingOAuth;
+    if (state && pending.state !== state) return null;
+    return pending;
   } catch {
     return null;
   }
@@ -89,11 +93,14 @@ export type DiscordUser = {
   avatar: string | null;
 };
 
-export async function fetchDiscordUser(code: string): Promise<DiscordUser> {
-  const pending = readPendingOAuth();
+export async function fetchDiscordUser(
+  code: string,
+  state?: string | null,
+): Promise<DiscordUser> {
+  const pending = readPendingOAuth(state ?? undefined);
   if (!pending) {
     throw new Error(
-      "Session de connexion expirée. Relance la connexion depuis /login.",
+      "Session de connexion expirée ou code non valide. Relance la connexion depuis /login.",
     );
   }
   clearPendingOAuth();
@@ -133,7 +140,7 @@ export function loginWithDiscord(user: DiscordUser): Session {
   const role = ALLOWED_DISCORD_IDS[user.id];
   if (!role) {
     throw new Error(
-      "Ce compte Discord n'est pas autorisé à accéder au dashboard.",
+      `Compte Discord refusé (@${user.username} · ${user.id}). Seuls 2 comptes sont autorisés sur ce dashboard.`,
     );
   }
 

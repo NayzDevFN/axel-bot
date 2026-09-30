@@ -16,6 +16,7 @@ export function DiscordCallback() {
 
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
+    const state = params.get("state");
     const oauthError = params.get("error");
 
     if (oauthError) {
@@ -28,7 +29,7 @@ export function DiscordCallback() {
       return;
     }
 
-    fetchDiscordUser(code)
+    fetchDiscordUser(code, state)
       .then((user) => {
         loginWithDiscord(user);
         router.replace("/dashboard");

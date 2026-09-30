@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/ui/Layout";
+import { BotStatus } from "@/components/bot/BotStatus";
+import { InviteBotButton } from "@/components/bot/InviteBotButton";
 import { clearSession, getSession } from "@/lib/auth";
 
 export function DashboardTopbar() {
@@ -34,10 +36,8 @@ export function DashboardTopbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="hidden items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-bold text-cream md:inline-flex">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            Axel Bot en ligne
-          </span>
+          <BotStatus />
+          <InviteBotButton />
 
           <div className="flex items-center gap-2.5 rounded-full border border-white/15 bg-white/10 py-1 pl-1 pr-3">
             <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-brand-500 text-[11px] font-black text-white">
